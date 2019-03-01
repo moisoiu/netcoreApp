@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CorrelationId;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -24,16 +25,34 @@ namespace WebApplication3
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+            services.AddCorrelationId();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCors(options => {
+                options.AllowAnyOrigin();
+                options.WithExposedHeaders("X-Correlation-ID");
+                options.AllowAnyHeader();
+                options.AllowAnyMethod();
+                options.WithHeaders("X-Correlation-ID");                
+                
+                options.Build();
+            });
+
+
+            app.UseCorrelationId();
+
+           
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            
 
             app.UseMvc();
         }

@@ -11,10 +11,11 @@ namespace WebApplication3.Controllers
     public class ValuesController : ControllerBase
     {
         // GET api/values
-        [HttpGet]
+        [HttpGet]        
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            throw new Exception("This is an error show me the header !!!");
+            return Ok();
         }
 
         // GET api/values/5
